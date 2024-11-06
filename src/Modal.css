@@ -1,0 +1,131 @@
+/* src/components/Modal.css */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3); /* Fondo semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-container {
+    background-color: #f3f3f3; /* Fondo gris claro */
+    padding: 20px;
+    border: 2px solid black; /* Borde negro */
+    border-radius: 8px;
+    width: 500px;
+    max-width: 90%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  }
+  
+  .modal-container h2 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 16px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .modal-container input {
+    width: calc(50% - 10px); /* Dos columnas */
+    margin: 5px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+  }
+  
+  .modal-buttons button {
+    padding: 10px 15px;
+    border: 1px solid black;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .modal-buttons button:first-child {
+    background-color: #333;
+    color: white;
+  }
+  
+  .modal-buttons button:last-child {
+    background-color: #f3f3f3;
+    color: black;
+  }
+  
+  .modal-buttons button:hover {
+    background-color: #ccc;
+  }
+  /* Modal.css */
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.modal-content h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+  width: 100%;
+  margin: 10px 0;
+  padding: 8px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-content button {
+  margin-top: 1rem;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-content button:first-of-type {
+  background-color: #4CAF50; /* Botón Guardar */
+  color: white;
+  margin-right: 10px;
+}
+
+.modal-content button:last-of-type {
+  background-color: #f44336; /* Botón Cancelar */
+  color: white;
+}

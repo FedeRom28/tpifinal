@@ -1,0 +1,96 @@
+.app-container {
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #ddd;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.admin-link {
+  font-size: 14px;
+  text-decoration: none;
+  color: #333;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-around;
+  padding: 12px;
+  background-color: #333;
+  color: #fff;
+}
+
+.navbar a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.main-content {
+  padding: 20px;
+}
+
+.content-wrapper {
+  display: flex;
+}
+
+.categories {
+  width: 20%;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.categories h3 {
+  margin-bottom: 10px;
+}
+
+.categories ul {
+  list-style: none;
+  padding: 0;
+}
+
+.categories li {
+  margin-bottom: 8px;
+}
+
+.product-section {
+  width: 80%;
+  padding-left: 20px;
+}
+
+.stock-controls {
+  margin-bottom: 10px;
+}
+
+.add-stock-button {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.product-table th, .product-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.product-table th {
+  background-color: #f2f2f2;
+}
