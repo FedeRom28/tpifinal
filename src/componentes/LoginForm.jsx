@@ -1,85 +1,85 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import './LoginForm.css';
 
-const LoginForm = () => {
-  const [nom_admin, setNomAdmin] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+class LoginForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      nom_admin: '',
+      contraseña: '',
+      error: '',
+    };
+  }
 
-  const handleNomAdminChange = (e) => {
-    setNomAdmin(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
+  handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
+    this.setState({ error: '' });
 
-    axios
-      .post('http://localhost:3000/api/admin', { nom_admin, password })
-      .then((response) => {
-        console.log('Inicio de sesión exitoso:', response.data);
-        // Manejar lógica adicional, como redirección o cambio de estado global.
-      })
-      .catch((err) => {
-        if (axios.isAxiosError(err)) {
-          setError(err.response?.data?.message || 'Error al iniciar sesión');
-        } else {
-          setError('Ocurrió un error inesperado');
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
+    // Mostrar los valores antes de enviar la solicitud
+    console.log('Datos del formulario:', {
+      nom_admin: this.state.nom_admin,
+      contraseña: this.state.contraseña,
+    });
+
+    try {
+      const response = await axios.post('http://localhost:3000/api/admin/login', {
+        nom_admin: this.state.nom_admin,
+        contraseña: this.state.contraseña,
       });
+
+      // Mostrar la respuesta completa por consola
+      console.log('Respuesta del servidor:', response.data);
+
+      if (response.data.status === 'ok') {
+        const { token } = response.data;
+        // Guardar el token en localStorage o manejar la autenticación
+        localStorage.setItem('token', token);
+        alert('Inicio de sesión exitoso');
+        // Redirigir a otra parte de la aplicación
+        window.location.href = '/dashboard';
+      }
+    } catch (err) {
+      console.error('Error en la solicitud:', err);
+      this.setState({ error: 'Nombre de usuario o contraseña incorrectos.' });
+    }
   };
 
-  return (
-    <div className="login-form-container">
-      <div className="login-card">
-        <h2 className="login-title">Iniciar Sesión</h2>
-        <p className="login-description">Ingresa tus credenciales de administrador</p>
-        <form className="login-form" onSubmit={handleSubmit}>
+  handleChange = (e) => {
+    this.setState({ [e.target.id]: e.target.value });
+  };
+
+  render() {
+    return (
+      <div className="login-container">
+        <form className="login-form" onSubmit={this.handleSubmit}>
+          <h2>Inicio de Sesión</h2>
+          {this.state.error && <p className="error-message">{this.state.error}</p>}
           <div className="form-group">
-            <label htmlFor="nom_admin" className="form-label">
-              Nombre de Administrador
-            </label>
+            <label htmlFor="nom_admin">Nombre de Usuario</label>
             <input
+              type="text"
               id="nom_admin"
-              className="form-input"
-              placeholder="Ingresa tu nombre de administrador"
-              value={nom_admin}
-              onChange={handleNomAdminChange}
+              value={this.state.nom_admin}
+              onChange={this.handleChange}
               required
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password" className="form-label">
-              Contraseña
-            </label>
+            <label htmlFor="contraseña">Contraseña</label>
             <input
-              id="password"
               type="password"
-              className="form-input"
-              placeholder="Ingresa tu contraseña"
-              value={password}
-              onChange={handlePasswordChange}
+              id="contraseña"
+              value={this.state.contraseña}
+              onChange={this.handleChange}
               required
             />
           </div>
-          {error && <div className="error-message">{error}</div>}
-          <button className="login-button" type="submit" disabled={isLoading}>
-            {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-          </button>
+          <button type="submit" className="login-button">Iniciar Sesión</button>
         </form>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 export default LoginForm;
