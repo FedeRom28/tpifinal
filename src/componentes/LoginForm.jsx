@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import './LoginForm.css';
-
 
 class LoginForm extends Component {
   constructor(props) {
@@ -10,54 +10,61 @@ class LoginForm extends Component {
       nom_admin: '',
       contraseña: '',
       error: '',
+      isLoggedIn: false,
     };
   }
 
-  handleSubmit = async (e) => {
-    e.preventDefault();
-    this.setState({ error: '' });
-
-    console.log('Datos del formulario:', {
-      nom_admin: this.state.nom_admin,
-      contraseña: this.state.contraseña,
-    });
-
-    try {
-      const response = await axios.post('http://localhost:3000/api/admin/login', {
-        nom_admin: this.state.nom_admin,
-        contraseña: this.state.contraseña,
-      });
-
-      console.log('Respuesta del servidor:', response.data);
-
-      if (response.data.status === 'ok') {
-        const { token } = response.data;
-        localStorage.setItem('token', token);
-        alert('Inicio de sesión exitoso');
-        this.props.navigate('/dashboard'); // Usar navigate para redirigir a /dashboard
-      }
-    } catch (err) {
-      console.error('Error en la solicitud:', err);
-      this.setState({ error: 'Nombre de usuario o contraseña incorrectos.' });
+  componentDidMount() {
+    // Verifica si el usuario ya está logueado
+    if (localStorage.getItem('token')) {
+      this.setState({ isLoggedIn: true });
     }
+  }
+
+  handleChange = (event) => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
   };
 
-  handleChange = (e) => {
-    this.setState({ [e.target.id]: e.target.value });
+  iniciarSesion = (event) => {
+    event.preventDefault();
+    const { nom_admin, contraseña } = this.state;
+    const datos = { nom_admin, contraseña };
+    const url = "http://localhost:3000/api/admin/login";
+
+    axios.post(url, datos)
+      .then((response) => {
+        if (response.data.token) {
+          // Si el login es exitoso, guarda el token en el localStorage
+          localStorage.setItem('token', response.data.token);
+          // Actualiza el estado para redirigir
+          this.setState({ isLoggedIn: true });
+        }
+      })
+      .catch((error) => {
+        this.setState({ error: 'Nombre de usuario o contraseña incorrectos' });
+      });
   };
 
   render() {
+    const { nom_admin, contraseña, error, isLoggedIn } = this.state;
+
+    if (isLoggedIn) {
+      return <Navigate to="/inicio" />;  // Redirige a la página de inicio
+    }
+
     return (
       <div className="login-container">
-        <form className="login-form" onSubmit={this.handleSubmit}>
+        <form className="login-form" onSubmit={this.iniciarSesion}>
           <h2>Inicio de Sesión</h2>
-          {this.state.error && <p className="error-message">{this.state.error}</p>}
+          {error && <p className="error-message">{error}</p>}
           <div className="form-group">
             <label htmlFor="nom_admin">Nombre de Usuario</label>
             <input
               type="text"
               id="nom_admin"
-              value={this.state.nom_admin}
+              name="nom_admin"
+              value={nom_admin}
               onChange={this.handleChange}
               required
             />
@@ -67,17 +74,21 @@ class LoginForm extends Component {
             <input
               type="password"
               id="contraseña"
-              value={this.state.contraseña}
+              name="contraseña"
+              value={contraseña}
               onChange={this.handleChange}
               required
             />
           </div>
-          <button type="submit" className="login-button">Iniciar Sesión</button>
+          <button type="submit" className="login-button">Iniciar sesión</button>
+          <p className="text-center mt-4">
+            ¿No tienes cuenta?{' '}
+            <Link to="/registro" className="text-primary">Regístrate aquí</Link>
+          </p>
         </form>
       </div>
     );
   }
 }
 
-
-export default LoginForm
+export default LoginForm;
