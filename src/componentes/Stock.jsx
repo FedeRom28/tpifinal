@@ -1,11 +1,12 @@
+// Stock.jsx
 import React, { Component } from "react";
 import axios from "axios";
+import Header from "./Header";
+import Navbar from "./Navbar";
+import ProductTable from "./ProductTable";
 import Modal from "./Modal";
 
-
-import "./App.css";
-
-class App extends Component {
+class Stock extends Component {
   state = {
     products: [],
     categories: [],
@@ -20,10 +21,9 @@ class App extends Component {
   };
 
   componentDidMount() {
-    // Verifica si hay un token antes de continuar
     const token = localStorage.getItem('token');
     if (!token) {
-      this.props.history.push('/'); // Redirige a login si no hay token
+      this.props.history.push('/');
     }
     this.fetchProducts();
     this.fetchCategories();
@@ -51,21 +51,14 @@ class App extends Component {
       });
   };
 
-  openModal = () => {
-    this.setState({ isModalOpen: true });
-  };
+  openModal = () => this.setState({ isModalOpen: true });
 
-  closeModal = () => {
-    this.setState({ isModalOpen: false });
-  };
+  closeModal = () => this.setState({ isModalOpen: false });
 
   handleInputChange = (e) => {
     const { name, value } = e.target;
     this.setState((prevState) => ({
-      newProduct: {
-        ...prevState.newProduct,
-        [name]: value,
-      },
+      newProduct: { ...prevState.newProduct, [name]: value },
     }));
   };
 
@@ -117,64 +110,23 @@ class App extends Component {
 
     return (
       <div className="app-container">
-        <header className="header">
-          <div className="logo">MVDS</div>
-          <a className="admin-link" href="#">
-            ADMINISTRADOR
-          </a>
-        </header>
-
-        <nav className="navbar">
-          <a href="#">INICIO</a>
-          <a href="#">PRODUCTOS</a>
-          <a href="#">CONTACTO</a>
-          <a href="#">PREGUNTAS FRECUENTES</a>
-          <a href="#">STOCK</a>
-        </nav>
-
+        <Header />
+        <Navbar />
         <main className="main-content">
           <div className="stock-controls">
             <button className="add-stock-button" onClick={this.openModal}>
               Agregar stock
             </button>
           </div>
-
-          <table className="product-table">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Precio</th>
-                <th>Categoría</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product) => (
-                <tr key={product.id_producto}>
-                  <td>{product.nom_producto}</td>
-                  <td>{product.descripcion}</td>
-                  <td>{product.precio}</td>
-                  <td>{product.id_categorias}</td>
-                  <td>
-                    <button
-                      onClick={() => {
-                        this.setState({ isEditMode: true, newProduct: product });
-                        this.openModal();
-                      }}
-                    >
-                      Editar
-                    </button>
-                    <button onClick={() => this.deleteProduct(product.id_producto)}>
-                      Eliminar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <ProductTable
+            products={products}
+            onEdit={(product) => {
+              this.setState({ isEditMode: true, newProduct: product });
+              this.openModal();
+            }}
+            onDelete={this.deleteProduct}
+          />
         </main>
-
         {isModalOpen && (
           <Modal
             product={newProduct}
