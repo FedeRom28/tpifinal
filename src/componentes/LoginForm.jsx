@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import './LoginForm.css';
 
+
 class LoginForm extends Component {
   constructor(props) {
     super(props);
@@ -16,7 +17,6 @@ class LoginForm extends Component {
     e.preventDefault();
     this.setState({ error: '' });
 
-    // Mostrar los valores antes de enviar la solicitud
     console.log('Datos del formulario:', {
       nom_admin: this.state.nom_admin,
       contraseña: this.state.contraseña,
@@ -28,16 +28,13 @@ class LoginForm extends Component {
         contraseña: this.state.contraseña,
       });
 
-      // Mostrar la respuesta completa por consola
       console.log('Respuesta del servidor:', response.data);
 
       if (response.data.status === 'ok') {
         const { token } = response.data;
-        // Guardar el token en localStorage o manejar la autenticación
         localStorage.setItem('token', token);
         alert('Inicio de sesión exitoso');
-        // Redirigir a otra parte de la aplicación
-        window.location.href = '/dashboard';
+        this.props.navigate('/dashboard'); // Usar navigate para redirigir a /dashboard
       }
     } catch (err) {
       console.error('Error en la solicitud:', err);
@@ -82,4 +79,5 @@ class LoginForm extends Component {
   }
 }
 
-export default LoginForm;
+
+export default LoginForm
