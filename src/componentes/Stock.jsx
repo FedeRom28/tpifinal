@@ -1,4 +1,3 @@
-// Stock.jsx
 import React, { Component } from "react";
 import axios from "axios";
 import "./Stock.css";
@@ -18,9 +17,9 @@ class Stock extends Component {
   };
 
   componentDidMount() {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      this.props.history.push('/');
+      this.props.history.push("/");
     }
     this.fetchProducts();
     this.fetchCategories();
@@ -29,28 +28,20 @@ class Stock extends Component {
   fetchProducts = () => {
     axios
       .get("http://localhost:3000/api/productos")
-      .then((response) => {
-        this.setState({ products: response.data });
-      })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-      });
+      .then((response) => this.setState({ products: response.data }))
+      .catch((error) => console.error("Error fetching products:", error));
   };
 
   fetchCategories = () => {
     axios
       .get("http://localhost:3000/api/categorias")
-      .then((response) => {
-        this.setState({ categories: response.data });
-      })
-      .catch((error) => {
-        console.error("Error fetching categories:", error);
-      });
+      .then((response) => this.setState({ categories: response.data }))
+      .catch((error) => console.error("Error fetching categories:", error));
   };
 
   openModal = () => this.setState({ isModalOpen: true });
 
-  closeModal = () => this.setState({ isModalOpen: false });
+  closeModal = () => this.setState({ isModalOpen: false, isEditMode: false });
 
   handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -68,9 +59,7 @@ class Stock extends Component {
           isModalOpen: false,
         }));
       })
-      .catch((error) => {
-        console.error("Error adding product:", error);
-      });
+      .catch((error) => console.error("Error adding product:", error));
   };
 
   updateProduct = (id) => {
@@ -84,9 +73,7 @@ class Stock extends Component {
           isModalOpen: false,
         }));
       })
-      .catch((error) => {
-        console.error("Error updating product:", error);
-      });
+      .catch((error) => console.error("Error updating product:", error));
   };
 
   deleteProduct = (id) => {
@@ -94,33 +81,30 @@ class Stock extends Component {
       .delete(`http://localhost:3000/api/productos/${id}`)
       .then(() => {
         this.setState((prevState) => ({
-          products: prevState.products.filter((product) => product.id_producto !== id),
+          products: prevState.products.filter(
+            (product) => product.id_producto !== id
+          ),
         }));
       })
-      .catch((error) => {
-        console.error("Error deleting product:", error);
-      });
+      .catch((error) => console.error("Error deleting product:", error));
   };
 
   render() {
     const { products, categories, isModalOpen, isEditMode, newProduct } = this.state;
 
     return (
-      <div className="app-container">
+      <div className="stock-container">
         <Header />
         <Navbar />
         <main className="main-content">
-          <div className="stock-controls">
-            <button className="add-stock-button" onClick={this.openModal}>
-              Agregar stock
-            </button>
-          </div>
+          <button className="add-stock-button" onClick={this.openModal}>
+            Agregar stock
+          </button>
           <ProductTable
             products={products}
-            onEdit={(product) => {
-              this.setState({ isEditMode: true, newProduct: product });
-              this.openModal();
-            }}
+            onEdit={(product) =>
+              this.setState({ isEditMode: true, newProduct: product }, this.openModal)
+            }
             onDelete={this.deleteProduct}
           />
         </main>
@@ -129,7 +113,11 @@ class Stock extends Component {
             product={newProduct}
             categories={categories}
             onChange={this.handleInputChange}
-            onSubmit={isEditMode ? () => this.updateProduct(newProduct.id_producto) : this.addProductToStock}
+            onSubmit={
+              isEditMode
+                ? () => this.updateProduct(newProduct.id_producto)
+                : this.addProductToStock
+            }
             onClose={this.closeModal}
           />
         )}
