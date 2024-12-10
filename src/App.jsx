@@ -6,6 +6,7 @@ import ProductTable from "./componentes/ProductTable";
 import Modal from "./componentes/Modal";
 import LoginForm from "./componentes/LoginForm";
 import Stock from './componentes/Stock';
+import Inicio from './componentes/Inicio';
 
 
 
