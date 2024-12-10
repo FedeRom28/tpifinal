@@ -1,12 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import Stock from './componentes/Stock'; 
-import LoginForm from './componentes/LoginForm'; 
+import App from './App.jsx'
+import './index.css'
 
 createRoot(document.getElementById('root')).render(
-
-   <StrictMode>
-   <Stock />
- </StrictMode>,
+  <StrictMode>
+    <App />
+  </StrictMode>,
 )
-
