@@ -1,10 +1,7 @@
 // Stock.jsx
 import React, { Component } from "react";
 import axios from "axios";
-import Header from "./Header";
-import Navbar from "./Navbar";
-import ProductTable from "./ProductTable";
-import Modal from "./Modal";
+import "./Stock.css";
 
 class Stock extends Component {
   state = {

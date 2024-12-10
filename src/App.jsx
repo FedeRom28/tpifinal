@@ -8,6 +8,7 @@ import LoginForm from "./componentes/LoginForm";
 import Stock from './componentes/Stock';
 
 
+
 class App extends Component {
     constructor(props) {
       super(props);
