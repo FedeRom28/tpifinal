@@ -25,14 +25,14 @@ class App extends Component {
           
           <main className="flex-grow-1 container my-4">
             <Routes>
-              <Route path="/" element={<LoginForm />} /> 
+              <Route path="/" element={<LoginForm/>} /> 
               <Route path="/LoginForm" element={<LoginForm />} />
               <Route path="/Modal" element={<Modal />} />
               <Route path="/Stock" element={<Stock />} />
               <Route path="/Navbar" element={<Navbar />} />
               <Route path="/ProductTable" element={<ProductTable />} />
               <Route path="/Header" element={<Header />} /> 
-              <Route path="/Inicio" element={<Inicio searchTerm={this.state.searchTerm} />} />  {/* Ajustar la ruta aquí */}
+              <Route path="/Inicio" element={<Inicio searchTerm={this.state.searchTerm} />} /> 
             </Routes>
           </main>
         </div>

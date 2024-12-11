@@ -8,15 +8,15 @@ class LoginForm extends Component {
     super(props);
     this.state = {
       nom_admin: '',
-      contraseña: '',
+      contrasena: '',
       error: '',
       isLoggedIn: false,
     };
   }
 
   componentDidMount() {
-    // Verifica si el usuario ya está logueado
-    if (localStorage.getItem('token')) {
+    // Verifica si el usuario ya está logueado en sessionStorage
+    if (sessionStorage.getItem('token')) {
       this.setState({ isLoggedIn: true });
     }
   }
@@ -26,36 +26,35 @@ class LoginForm extends Component {
     this.setState({ [name]: value });
   };
 
-  iniciarSesion = (event) => {
-    event.preventDefault();
-    const { nom_admin, contraseña } = this.state;
-    const datos = { nom_admin, contraseña };
+  iniciarSesion = () => {
+    const { nom_admin, contrasena } = this.state;
+    const datos = { nom_admin, contrasena };
     const url = "http://localhost:3000/api/admin/login";
 
     axios.post(url, datos)
       .then((response) => {
-        if (response.data.token) {
-          // Si el login es exitoso, guarda el token en el localStorage
-          localStorage.setItem('token', response.data.token);
-          // Actualiza el estado para redirigir
-          this.setState({ isLoggedIn: true });
-        }
+        response.data.token
+          ? (
+            sessionStorage.setItem('token', response.data.token), // Almacena el token en sessionStorage
+            this.setState({ isLoggedIn: true, error: '' })
+          )
+          : this.setState({ error: 'Nombre de usuario o contraseña incorrectos' });
       })
-      .catch((error) => {
+      .catch(() => {
         this.setState({ error: 'Nombre de usuario o contraseña incorrectos' });
       });
   };
 
   render() {
-    const { nom_admin, contraseña, error, isLoggedIn } = this.state;
+    const { nom_admin, contrasena, error, isLoggedIn } = this.state;
 
     if (isLoggedIn) {
-      return <Navigate to="/inicio" />;  // Redirige a la página de inicio
+      return <Navigate to="/inicio" />; // Redirige a la página de inicio
     }
 
     return (
       <div className="login-container">
-        <form className="login-form" onSubmit={this.iniciarSesion}>
+        <form className="login-form">
           <h2>Inicio de Sesión</h2>
           {error && <p className="error-message">{error}</p>}
           <div className="form-group">
@@ -70,21 +69,25 @@ class LoginForm extends Component {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="contraseña">Contraseña</label>
+            <label htmlFor="contrasena">Contraseña</label>
             <input
               type="password"
-              id="contraseña"
-              name="contraseña"
-              value={contraseña}
+              id="contrasena"
+              name="contrasena"
+              value={contrasena}
               onChange={this.handleChange}
               required
             />
           </div>
-          <button type="submit" className="login-button">Iniciar sesión</button>
-          <p className="text-center mt-4">
-            ¿No tienes cuenta?{' '}
-            <Link to="/registro" className="text-primary">Regístrate aquí</Link>
-          </p>
+          <Link to={isLoggedIn ? "/inicio" : "/login"}>
+            <button
+              type="button"
+              className="login-button"
+              onClick={this.iniciarSesion}
+            >
+              Iniciar sesión
+            </button>
+          </Link>
         </form>
       </div>
     );
