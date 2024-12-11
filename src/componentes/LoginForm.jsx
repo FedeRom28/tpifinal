@@ -29,13 +29,13 @@ class LoginForm extends Component {
   iniciarSesion = () => {
     const { nom_admin, contrasena } = this.state;
     const datos = { nom_admin, contrasena };
-    const url = "http://localhost:3000/api/admin/login";
+    const url = "http://localhost:3000/api/Admin/login";
 
     axios.post(url, datos)
       .then((response) => {
         response.data.token
           ? (
-            sessionStorage.setItem('token', response.data.token), // Almacena el token en sessionStorage
+            sessionStorage.setItem('token', response.data.token),
             this.setState({ isLoggedIn: true, error: '' })
           )
           : this.setState({ error: 'Nombre de usuario o contraseña incorrectos' });
@@ -79,7 +79,7 @@ class LoginForm extends Component {
               required
             />
           </div>
-          <Link to={isLoggedIn ? "/inicio" : "/login"}>
+          <Link to={isLoggedIn ? "/LoginForm" : "/Inicio"}>
             <button
               type="button"
               className="login-button"
