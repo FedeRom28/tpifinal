@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import axios from 'axios';
 import './LoginForm.css';
 
@@ -8,7 +8,7 @@ class LoginForm extends Component {
     super(props);
     this.state = {
       nom_admin: '',
-      contrasena: '',
+      contraseña: '',
       error: '',
       isLoggedIn: false,
     };
@@ -26,19 +26,20 @@ class LoginForm extends Component {
     this.setState({ [name]: value });
   };
 
-  iniciarSesion = () => {
-    const { nom_admin, contrasena } = this.state;
-    const datos = { nom_admin, contrasena };
-    const url = "http://localhost:3000/api/Admin/login";
+  iniciarSesion = (event) => {
+    event.preventDefault();
+    const { nom_admin, contraseña } = this.state;
+    const datos = { nom_admin, contraseña };
+    const url = "http://localhost:3000/api/admin/login";
 
     axios.post(url, datos)
       .then((response) => {
-        response.data.token
-          ? (
-            sessionStorage.setItem('token', response.data.token),
-            this.setState({ isLoggedIn: true, error: '' })
-          )
-          : this.setState({ error: 'Nombre de usuario o contraseña incorrectos' });
+        if (response.data.token) {
+          sessionStorage.setItem('token', response.data.token);
+          this.setState({ isLoggedIn: true, error: '' });
+        } else {
+          this.setState({ error: 'Nombre de usuario o contraseña incorrectos' });
+        }
       })
       .catch(() => {
         this.setState({ error: 'Nombre de usuario o contraseña incorrectos' });
@@ -46,15 +47,15 @@ class LoginForm extends Component {
   };
 
   render() {
-    const { nom_admin, contrasena, error, isLoggedIn } = this.state;
+    const { nom_admin, contraseña, error, isLoggedIn } = this.state;
 
     if (isLoggedIn) {
-      return <Navigate to="/inicio" />; // Redirige a la página de inicio
+      return <Navigate to="/Inicio" />; // Redirige a la página de inicio
     }
 
     return (
       <div className="login-container">
-        <form className="login-form">
+        <form className="login-form" onSubmit={this.iniciarSesion}>
           <h2>Inicio de Sesión</h2>
           {error && <p className="error-message">{error}</p>}
           <div className="form-group">
@@ -69,25 +70,22 @@ class LoginForm extends Component {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="contrasena">Contraseña</label>
+            <label htmlFor="contraseña">Contraseña</label>
             <input
               type="password"
-              id="contrasena"
-              name="contrasena"
-              value={contrasena}
+              id="contraseña"
+              name="contraseña"
+              value={contraseña}
               onChange={this.handleChange}
               required
             />
           </div>
-          <Link to={isLoggedIn ? "/LoginForm" : "/Inicio"}>
-            <button
-              type="button"
-              className="login-button"
-              onClick={this.iniciarSesion}
-            >
-              Iniciar sesión
-            </button>
-          </Link>
+          <button
+            type="submit"
+            className="login-button"
+          >
+            Iniciar sesión
+          </button>
         </form>
       </div>
     );
