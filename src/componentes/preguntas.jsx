@@ -1,64 +1,52 @@
 // Preguntas.jsx
 
-import React from 'react';
+import React, { useState } from 'react';
 import './Preguntas.css';
 
-const Preguntas = () => {
-  const faqs = [
-    {
-      question: "¿Cuál es el tiempo de entrega?",
-      answer: "El tiempo de entrega estándar es de 3 a 5 días hábiles. Para zonas remotas, puede tomar hasta 7 días hábiles."
-    },
-    {
-      question: "¿Cómo puedo realizar un cambio o devolución?",
-      answer: "Puedes solicitar un cambio o devolución dentro de los 30 días posteriores a la compra. El producto debe estar sin usar y en su empaque original."
-    },
-    {
-      question: "¿Ofrecen envío gratuito?",
-      answer: "Sí, ofrecemos envío gratuito en compras superiores a $50.000."
-    },
-    {
-      question: "¿Cuáles son las formas de pago aceptadas?",
-      answer: "Aceptamos tarjetas de crédito, débito, transferencias bancarias y PayPal."
-    },
-    {
-      question: "¿Tienen tiendas físicas?",
-      answer: "Sí, contamos con tiendas físicas en las principales ciudades. Puedes encontrar la ubicación más cercana en nuestra sección de 'Tiendas'."
-    }
-  ];
+function Preguntas() {
+  const [indiceActivo, setIndiceActivo] = useState(null);
 
-  const toggleAccordion = (index) => {
-    const items = document.querySelectorAll('.accordion-item');
-    items.forEach((item, i) => {
-      if (i === index) {
-        item.classList.toggle('active');
-      } else {
-        item.classList.remove('active');
-      }
-    });
+  const toggleOcultarMostrar = (indice) => {
+    setIndiceActivo(indiceActivo === indice ? null : indice);
   };
 
   return (
-    <div className="preguntas-container">
-      <SiteHeader />
-      <main className="preguntas-main">
-        <div className="preguntas-content">
-          <CategoriesSidebar />
-          <div className="preguntas-list">
-            <h1 className="preguntas-title">Preguntas Frecuentes</h1>
-            <div className="accordion">
-              {faqs.map((faq, index) => (
-                <div className="accordion-item" key={index} onClick={() => toggleAccordion(index)}>
-                  <div className="accordion-trigger">{faq.question}</div>
-                  <div className="accordion-content">{faq.answer}</div>
-                </div>
-              ))}
-            </div>
+    <div className="preguntas-contenedor">
+      <h1 className="preguntas-titulo">Preguntas Frecuentes</h1>
+      <div className="ocultar-mostrar">
+        <div className={`ocultar-mostrar-item ${indiceActivo === 0 ? 'activo' : ''}`} onClick={() => toggleOcultarMostrar(0)}>
+          <div className="ocultar-mostrar-trigger">¿Cuál es el tiempo de entrega?</div>
+          <div className="ocultar-mostrar-contenido">
+            El tiempo de entrega estándar es de 3 a 5 días hábiles. Para zonas remotas, puede tomar hasta 7 días hábiles.
           </div>
         </div>
-      </main>
+        <div className={`ocultar-mostrar-item ${indiceActivo === 1 ? 'activo' : ''}`} onClick={() => toggleOcultarMostrar(1)}>
+          <div className="ocultar-mostrar-trigger">¿Cómo puedo realizar un cambio o devolución?</div>
+          <div className="ocultar-mostrar-contenido">
+            Puedes solicitar un cambio o devolución dentro de los 30 días posteriores a la compra. El producto debe estar sin usar y en su empaque original.
+          </div>
+        </div>
+        <div className={`ocultar-mostrar-item ${indiceActivo === 2 ? 'activo' : ''}`} onClick={() => toggleOcultarMostrar(2)}>
+          <div className="ocultar-mostrar-trigger">¿Ofrecen envío gratuito?</div>
+          <div className="ocultar-mostrar-contenido">
+            Sí, ofrecemos envío gratuito en compras superiores a $50.000.
+          </div>
+        </div>
+        <div className={`ocultar-mostrar-item ${indiceActivo === 3 ? 'activo' : ''}`} onClick={() => toggleOcultarMostrar(3)}>
+          <div className="ocultar-mostrar-trigger">¿Cuáles son las formas de pago aceptadas?</div>
+          <div className="ocultar-mostrar-contenido">
+            Aceptamos tarjetas de crédito, débito, transferencias bancarias y PayPal.
+          </div>
+        </div>
+        <div className={`ocultar-mostrar-item ${indiceActivo === 4 ? 'activo' : ''}`} onClick={() => toggleOcultarMostrar(4)}>
+          <div className="ocultar-mostrar-trigger">¿Tienen tiendas físicas?</div>
+          <div className="ocultar-mostrar-contenido">
+            Sí, contamos con tiendas físicas en las principales ciudades. Puedes encontrar la ubicación más cercana en nuestra sección de 'Tiendas'.
+          </div>
+        </div>
+      </div>
     </div>
   );
-};
+}
 
 export default Preguntas;
