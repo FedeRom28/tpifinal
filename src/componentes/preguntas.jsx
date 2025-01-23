@@ -1,5 +1,3 @@
-// Preguntas.jsx
-
 import React from 'react';
 import './Preguntas.css';
 
