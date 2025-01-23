@@ -1,35 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// App.jsx
 
-function App() {
-  const [count, setCount] = useState(0)
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Header from "./componentes/Header";
+import Navbar from "./componentes/Navbar";
+import ProductTable from "./componentes/ProductTable";
+import Modal from "./componentes/Modal";
+import LoginForm from "./componentes/LoginForm";
+import Stock from './componentes/Stock';
+import Inicio from './componentes/Inicio';
+
+const App = () => {
+  const [searchTerm, setSearchTerm] = React.useState('');
+
+  const manejarBusqueda = (term) => {
+    setSearchTerm(term);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router>
+      <div className="min-vh-100 d-flex flex-column">
+        <Header onSearch={manejarBusqueda} />
+        <Navbar /> {/* Navbar se carga solo aquí */}
+        
+        <main className="flex-grow-1 container my-4">
+          <Routes>
+            <Route path="/" element={<Inicio searchTerm={searchTerm} />} /> 
+            <Route path="/login" element={<LoginForm />} />
+            <Route path="/modal" element={<Modal />} />
+            <Route path="/stock" element={<Stock />} />
+            <Route path="/productos" element={<ProductTable />} />
+            <Route path="/contacto" element={<Modal />} /> 
+            <Route path="/preguntas-frecuentes" element={<Header />} /> 
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </main>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    </Router>
+  );
+};
 
-export default App
+export default App;
