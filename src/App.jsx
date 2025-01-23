@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// App.jsx
+
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Header from "./componentes/Header";
 import Navbar from "./componentes/Navbar";
 import ProductTable from "./componentes/ProductTable";
@@ -8,37 +10,34 @@ import LoginForm from "./componentes/LoginForm";
 import Stock from './componentes/Stock';
 import Inicio from './componentes/Inicio';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchTerm: ''
-    };
-  }
+const App = () => {
+  const [searchTerm, setSearchTerm] = React.useState('');
 
-  render() {
-    return (
-      <Router>
-        <div className="min-vh-100 d-flex flex-column">
-          <Header onSearch={this.handleSearch} />
-          <Navbar />
-          
-          <main className="flex-grow-1 container my-4">
-            <Routes>
-              <Route path="/" element={<LoginForm/>} /> 
-              <Route path="/LoginForm" element={<LoginForm />} />
-              <Route path="/Modal" element={<Modal />} />
-              <Route path="/Stock" element={<Stock />} />
-              <Route path="/Navbar" element={<Navbar />} />
-              <Route path="/ProductTable" element={<ProductTable />} />
-              <Route path="/Header" element={<Header />} /> 
-              <Route path="/Inicio" element={<Inicio searchTerm={this.state.searchTerm} />} /> 
-            </Routes>
-          </main>
-        </div>
-      </Router>
-    );
-  }
-}
+  const manejarBusqueda = (term) => {
+    setSearchTerm(term);
+  };
+
+  return (
+    <Router>
+      <div className="min-vh-100 d-flex flex-column">
+        <Header onSearch={manejarBusqueda} />
+        <Navbar /> {/* Navbar se carga solo aquí */}
+        
+        <main className="flex-grow-1 container my-4">
+          <Routes>
+            <Route path="/" element={<Inicio searchTerm={searchTerm} />} /> 
+            <Route path="/login" element={<LoginForm />} />
+            <Route path="/modal" element={<Modal />} />
+            <Route path="/stock" element={<Stock />} />
+            <Route path="/productos" element={<ProductTable />} />
+            <Route path="/contacto" element={<Modal />} /> 
+            <Route path="/preguntas-frecuentes" element={<Header />} /> 
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
+  );
+};
 
 export default App;

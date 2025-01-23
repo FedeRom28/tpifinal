@@ -1,13 +1,16 @@
+// Navbar.jsx
+
 import React from "react";
-import "./Stock.css";
+import { Link } from "react-router-dom";
+import "./Navbar.css";
 
 const Navbar = () => (
   <nav className="navbar">
-    <a href="#">INICIO</a>
-    <a href="#">PRODUCTOS</a>
-    <a href="#">CONTACTO</a>
-    <a href="#">PREGUNTAS FRECUENTES</a>
-    <a href="#">STOCK</a>
+    <Link to="/">INICIO</Link>
+    <Link to="/productos">PRODUCTOS</Link>
+    <Link to="/contacto">CONTACTO</Link>
+    <Link to="/preguntas-frecuentes">PREGUNTAS FRECUENTES</Link>
+    <Link to="/stock">STOCK</Link>
   </nav>
 );
 
