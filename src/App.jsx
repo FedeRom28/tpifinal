@@ -9,7 +9,8 @@ import Modal from "./componentes/Modal";
 import LoginForm from "./componentes/LoginForm";
 import Stock from './componentes/Stock';
 import Inicio from './componentes/Inicio';
-import Preguntas from './componentes/preguntas'; // Importa el componente Preguntas
+import Preguntas from './componentes/preguntas';
+import { Contactos } from './componentes/Contactos';// Importa el componente Contactos
 
 const App = () => {
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -31,8 +32,8 @@ const App = () => {
             <Route path="/modal" element={<Modal />} />
             <Route path="/stock" element={<Stock />} />
             <Route path="/productos" element={<ProductTable />} />
-            <Route path="/contacto" element={<Modal />} /> 
-            <Route path="/preguntas-frecuentes" element={<Preguntas />} /> {/* Ruta para Preguntas */}
+            <Route path="/contacto" element={<Contactos />} /> 
+            <Route path="/preguntas-frecuentes" element={<Preguntas />} /> 
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </main>
