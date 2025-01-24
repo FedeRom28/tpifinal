@@ -9,8 +9,8 @@ import Modal from "./componentes/Modal";
 import LoginForm from "./componentes/LoginForm";
 import Stock from './componentes/Stock';
 import Inicio from './componentes/Inicio';
-import Preguntas from './componentes/preguntas';
-import { Contactos } from './componentes/Contactos';// Importa el componente Contactos
+import Preguntas from './componentes/Preguntas';
+import Contactos  from './componentes/Contactos'; // Importa el componente Contactos
 
 const App = () => {
   const [searchTerm, setSearchTerm] = React.useState('');
