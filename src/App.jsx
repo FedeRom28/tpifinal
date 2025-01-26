@@ -6,8 +6,8 @@ import ProductTable from "./componentes/ProductTable";
 import Modal from "./componentes/Modal";
 import Stock from './componentes/Stock';
 import Inicio from './componentes/Inicio';
-import Contactos from './componentes/Contactos'; // Importa el componente Contactos
-import Preguntas from './componentes/Preguntas'; // Importa el componente Preguntas
+import Contactos from './componentes/Contactos';
+import Preguntas from './componentes/Preguntas'; 
 import LoginForm from './componentes/LoginForm';
 
 const App = () => {
@@ -23,12 +23,12 @@ const App = () => {
         <Routes>
           <Route path="/" element={<LoginForm />} />
           <Route path="/login" element={<LoginForm />} />
-          <Route path="/Modal" element={<Modal />} />
+          <Route path="/modal" element={<Modal />} />
           <Route path="/stock" element={<Stock />} />
-          <Route path="/Navbar" element={<Navbar />} />
-          <Route path="/ProductTable" element={<ProductTable />} />
-          <Route path="/Header" element={<Header />} />
-          <Route path="/Inicio" element={<Inicio />} />
+          <Route path="/navbar" element={<Navbar />} />
+          <Route path="/producttable" element={<ProductTable />} />
+          <Route path="/header" element={<Header />} />
+          <Route path="/inicio" element={<Inicio />} />
           <Route path="/contactos" element={<Contactos />} /> 
           <Route path="/preguntas-frecuentes" element={<Preguntas />} />
         </Routes>

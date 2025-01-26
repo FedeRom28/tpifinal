@@ -6,8 +6,9 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Aquí puedes agregar la lógica de cierre de sesión, como limpiar el estado de autenticación
-    navigate('/login');
+    // Limpiar el estado de autenticación
+    sessionStorage.removeItem('token');
+    navigate('/login'); // Redirigir a la página de login
   };
 
   return (
