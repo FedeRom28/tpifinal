@@ -8,7 +8,7 @@ const Navbar = () => {
   const handleLogout = () => {
     // Limpiar el estado de autenticación
     sessionStorage.removeItem('token');
-    navigate('/login'); // Redirigir a la página de login
+    navigate('/'); // Redirigir a la página de login
   };
 
   return (

@@ -16,13 +16,12 @@ const App = () => {
   return (
     <div className="min-vh-100 d-flex flex-column">
       {/* Renderizar Header y Navbar solo si no estamos en la ruta de login */}
-      {location.pathname !== '/login' && <Header />}
-      {location.pathname !== '/login' && <Navbar />}
+      {location.pathname !== '/' && <Header />}
+      {location.pathname !== '/' && <Navbar />}
       
       <main className="flex-grow-1 container my-4">
         <Routes>
           <Route path="/" element={<LoginForm />} />
-          <Route path="/login" element={<LoginForm />} />
           <Route path="/modal" element={<Modal />} />
           <Route path="/stock" element={<Stock />} />
           <Route path="/navbar" element={<Navbar />} />
