@@ -50,7 +50,7 @@ class LoginForm extends Component {
     const { nom_admin, contraseña, error, isLoggedIn } = this.state;
 
     if (isLoggedIn) {
-      return <Navigate to="/Inicio" />; // Redirige a la página de inicio
+      return <Navigate to="/inicio" />; // Redirige a la página de inicio
     }
 
     return (
