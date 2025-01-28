@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Link, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import './LoginForm.css';
+import { Navigate } from 'react-router-dom';
 
 class LoginForm extends Component {
   constructor(props) {
@@ -29,16 +29,20 @@ class LoginForm extends Component {
   iniciarSesion = () => {
     const { nom_admin, contrasena } = this.state;
     const datos = { nom_admin, contrasena };
-    const url = "http://localhost:3000/api/admin/login";
+    const url = "http://localhost:3000/api/admin/login";    
 
     axios.post(url, datos)
       .then((response) => {
-        response.data.token
-          ? (
-            sessionStorage.setItem('token', response.data.token), // Almacena el token en sessionStorage
-            this.setState({ isLoggedIn: true, error: '' })
-          )
-          : this.setState({ error: 'Nombre de usuario o contraseña incorrectos' });
+
+        console.log(response.data);
+        
+        if(response.data.token){
+          sessionStorage.setItem('token', response.data.token), // Almacena el token en sessionStorage
+          this.setState({ isLoggedIn: true, error: '' })
+        }
+        else{
+          this.setState({ error: 'Nombre de usuario o contraseña incorrectos' })
+        }
       })
       .catch(() => {
         this.setState({ error: 'Nombre de usuario o contraseña incorrectos' });
@@ -79,15 +83,13 @@ class LoginForm extends Component {
               required
             />
           </div>
-          <Link to={isLoggedIn ? "/inicio" : "/login"}>
-            <button
-              type="button"
-              className="login-button"
-              onClick={this.iniciarSesion}
-            >
-              Iniciar sesión
-            </button>
-          </Link>
+          <button
+            type="button"
+            className="login-button"
+            onClick={this.iniciarSesion}
+          >
+            Iniciar sesión
+          </button>
         </form>
       </div>
     );

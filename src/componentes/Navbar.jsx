@@ -1,13 +1,13 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import "./Stock.css";
 
 const Navbar = () => (
   <nav className="navbar">
-    <a href="#">INICIO</a>
-    <a href="#">PRODUCTOS</a>
-    <a href="#">CONTACTO</a>
-    <a href="#">PREGUNTAS FRECUENTES</a>
-    <a href="#">STOCK</a>
+    <NavLink to="/Inicio">INICIO</NavLink>
+    <NavLink to="/Inicio">CONTACTO</NavLink>
+    <NavLink to="/Inicio">PREGUNTAS FRECUENTES</NavLink>
+    <NavLink to="/Productos">PRODUCTOS</NavLink>
   </nav>
 );
 

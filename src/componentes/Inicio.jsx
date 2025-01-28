@@ -1,38 +1,28 @@
 import React, { Component } from 'react';
 import './Inicio.css';
+import axios from 'axios';
 class Inicio extends Component {
-  state = {
-    productos: [
-      {
-        id: 1,
-        nombre: "REMERA OVER ESSENTIALS",
-        precio: "$16.000",
-        imagen: "ruta_a_la_imagen_1",
-        stock: true,
-      },
-      {
-        id: 2,
-        nombre: "BUZO ESSENTIALS",
-        precio: "$16.000",
-        imagen: "ruta_a_la_imagen_2",
-        stock: false,
-      },
-      {
-        id: 3,
-        nombre: "REMERA OVER DESGASTADA",
-        precio: "$16.000",
-        imagen: "ruta_a_la_imagen_3",
-        stock: true,
-      },
-      {
-        id: 4,
-        nombre: "ZAPATILLAS PUMAS SUEDE XL",
-        precio: "$65.000",
-        imagen: "ruta_a_la_imagen_4",
-        stock: true,
-      },
-    ],
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      productos: [],
+    };
+  }
+
+  getProductos(){
+    axios.get('http://localhost:3000/api/productos')
+    .then(res=>{
+      this.setState({productos: res.data.productos});
+      console.log(res.data.productos);
+    })
+    .catch(err=>{
+      console.log(err);
+    })
+  }
+
+  componentDidMount() {
+    this.getProductos()
+  }
 
   render() {
     const { productos } = this.state;
@@ -55,9 +45,9 @@ class Inicio extends Component {
         <main className="productos">
           {productos.map((producto) => (
             <div key={producto.id} className="producto-card">
-              <img src={producto.imagen} alt={producto.nombre} />
-              <h4>{producto.nombre}</h4>
-              <p>{producto.precio}</p>
+              <img src={producto.imagen} alt={producto.nom_producto} />
+              <h4>{producto.nom_producto}</h4>
+              <p>$ {producto.precio}</p>
               {!producto.stock && <span className="sin-stock">SIN STOCK</span>}
             </div>
           ))}
