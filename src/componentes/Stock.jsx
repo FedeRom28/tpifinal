@@ -6,11 +6,9 @@ import ProductTable from "./ProductTable";
 import Modal from "./Modal";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import ProductTable from "./ProductTable";
-import Modal from "./Modal";
 import "./Stock.css";
 
-class Stock extends Component {
+class ComponenteStock extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -20,7 +18,7 @@ class Stock extends Component {
       isEditMode: false,
       newProduct: {
         nom_producto: "",
-        id_categorias: "",
+        id_categorias: 0 || "",
         precio: "",
         descripcion: "",
       },
@@ -56,14 +54,20 @@ class Stock extends Component {
       .catch((error) => console.error("Error fetching categories:", error));
   };
 
-  abrirModal = () => this.setState({ isModalOpen: true });
+  abrirModal=()=>{
+    this.setState({ isModalOpen: true });
+  }
 
-  cerrarModal = () => this.setState({ isModalOpen: false, isEditMode: false });
+  cerrarModal=()=>{
+    this.setState({ isModalOpen: false, isEditMode: false });
+  }
 
-  manejarCambioEntrada = (e) => {
+  handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
+    
     this.setState((prevState) => ({
-      nuevoProducto: { ...prevState.nuevoProducto, [name]: value },
+      newProduct: { ...prevState.newProduct, [name]: value },
     }));
   };
 
@@ -92,6 +96,7 @@ class Stock extends Component {
         this.setState({
           isModalOpen: false,
         })
+        this.fetchProducts()
       })
       .catch((error) => console.error("Error adding product:", error));
     };
@@ -144,21 +149,23 @@ class Stock extends Component {
       .catch((error) => console.error("Error eliminando producto:", error));
   }
 
+  modalEdit = (product) => {
+    this.setState({ isModalOpen:true , isEditMode: true, newProduct: product }); 
+  }
+
   render() {
-    const { productos, categorias, isModalOpen, isEditMode, nuevoProducto } = this.state;
+    const { products, categories, isModalOpen, isEditMode, newProduct } = this.state;
     return (
       <div className="stock-container">
         <main className="main-content">
 
-          <button className="add-stock-button" onClick={this.openModal}>
+          <button className="add-stock-button" onClick={this.abrirModal}>
             Agregar Producto
           </button>
           <ProductTable
             products={products}
             categorias={categories}
-            onEdit={(product) =>
-              this.setState({ isEditMode: true, newProduct: product }, this.openModal)
-            }
+            onEdit={(product) =>this.modalEdit(product)}
             onDelete={(id)=>this.deleteProduct(id)}
           />
         </main>
@@ -166,13 +173,13 @@ class Stock extends Component {
           <Modal
             product={newProduct}
             categories={categories}
-            onChange={this.handleInputChange}
+            handleChange={(e)=>this.handleInputChange(e)}
             onSubmit={
               isEditMode
                 ? (id) => this.updateProduct(id)
                 : this.addProductToStock
             }
-            onClose={this.closeModal}
+            onClose={this.cerrarModal}
           />
         }
       </div>

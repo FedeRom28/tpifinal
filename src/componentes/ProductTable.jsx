@@ -32,6 +32,7 @@ class ProductTable extends Component{
             <td>{product.precio}</td>
             <td>{this.getCategoriaNombre(product.id_categorias)}</td>
             <td>
+              {console.log({product})}
               <button onClick={() => this.props.onEdit(product)}>Editar</button>
               <button onClick={() => this.props.onDelete(product.id_productos)}>Eliminar</button>
             </td>

@@ -21,7 +21,7 @@ const App = () => {
           <Route path="/" element={<LoginForm />} />
           <Route path="/stock" element={<Stock />} />
           <Route path="/header" element={<Header />} /> 
-          <Route path="/inicio" element={<Inicio searchTerm={this.state.searchTerm} />} /> 
+          <Route path="/inicio" element={<Inicio/>} /> 
           <Route path="/contactos" element={<Contactos />} /> 
           <Route path="/preguntas-frecuentes" element={<Preguntas />} />
         </Routes>

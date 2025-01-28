@@ -7,7 +7,7 @@ class Modal extends Component {
   }
 
   render(){
-    const { product, categories, onChange, onSubmit, onClose } = this.props;
+    const { product, categories, handleChange, onSubmit, onClose } = this.props;
    
     return(
       <div className="modal">
@@ -20,7 +20,7 @@ class Modal extends Component {
                 type="text"
                 name="nom_producto"
                 value={product.nom_producto}
-                onChange={onChange}
+                onChange={(e)=>handleChange(e)}
               />
             </label>
             <label>
@@ -29,7 +29,7 @@ class Modal extends Component {
                 type="text"
                 name="descripcion"
                 value={product.descripcion}
-                onChange={onChange}
+                onChange={(e)=>handleChange(e)}
               />
             </label>
             <label>
@@ -38,15 +38,15 @@ class Modal extends Component {
                 type="text"
                 name="precio"
                 value={product.precio}
-                onChange={onChange}
+                onChange={(e)=>handleChange(e)}
               />
             </label>
             <label>
               Categoría:
               <select
                 name="id_categorias"
-                value={product.id_categorias}
-                onChange={(e)=>onChange(e)}
+                // value={product.id_categorias || ""}
+                onChange={(e)=>handleChange(e)}
               >
                 <option value="">Seleccione una categoría</option>
                 {categories.map((category) => (
