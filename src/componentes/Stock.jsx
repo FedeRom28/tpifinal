@@ -1,9 +1,13 @@
+// Stock.jsx
+
 import React, { Component } from "react";
-import Header from "./Header";
-import Navbar from "./Navbar";
+
 import ProductTable from "./ProductTable";
 import Modal from "./Modal";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import ProductTable from "./ProductTable";
+import Modal from "./Modal";
 import "./Stock.css";
 
 class Stock extends Component {
@@ -52,16 +56,17 @@ class Stock extends Component {
       .catch((error) => console.error("Error fetching categories:", error));
   };
 
-  openModal = () => this.setState({ isModalOpen: true });
+  abrirModal = () => this.setState({ isModalOpen: true });
 
-  closeModal = () => this.setState({ isModalOpen: false, isEditMode: false });
+  cerrarModal = () => this.setState({ isModalOpen: false, isEditMode: false });
 
-  handleInputChange = (e) => {
+  manejarCambioEntrada = (e) => {
     const { name, value } = e.target;
     this.setState((prevState) => ({
-      newProduct: { ...prevState.newProduct, [name]: value },
+      nuevoProducto: { ...prevState.nuevoProducto, [name]: value },
     }));
   };
+
 
   addProductToStock = () => {
     const product = this.state.newProduct;
@@ -136,15 +141,15 @@ class Stock extends Component {
       .then(() => {
         this.fetchProducts()
       })
-      .catch((error) => console.error("Error deleting product:", error));
-  };
+      .catch((error) => console.error("Error eliminando producto:", error));
+  }
 
   render() {
-    const { products, categories, isModalOpen, isEditMode, newProduct } = this.state;
-
+    const { productos, categorias, isModalOpen, isEditMode, nuevoProducto } = this.state;
     return (
       <div className="stock-container">
         <main className="main-content">
+
           <button className="add-stock-button" onClick={this.openModal}>
             Agregar Producto
           </button>
@@ -173,6 +178,12 @@ class Stock extends Component {
       </div>
     );
   }
+}
+
+// Función envolvente para pasar navigate a un componente de clase
+const Stock = (props) => {
+  const navigate = useNavigate();
+  return <ComponenteStock {...props} navigate={navigate} />;
 }
 
 export default Stock;
