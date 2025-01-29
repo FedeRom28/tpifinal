@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import Header from "./componentes/Header";
+import Navbar from "./componentes/Navbar";
+import Stock from './componentes/Stock';
+import Inicio from './componentes/Inicio';
+import Contactos from './componentes/Contactos';
+import Preguntas from './componentes/Preguntas'; 
+import LoginForm from './componentes/LoginForm';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App = () => {
+  const location = useLocation();
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="min-vh-100 d-flex flex-column">
+      {/* Renderizar Header y Navbar solo si no estamos en la ruta de login */}
+      {location.pathname !== '/' && <Header />}
+      {location.pathname !== '/' && <Navbar />}
+      
+      <main className="flex-grow-1 container my-4">
+        <Routes>
+          <Route path="/" element={<LoginForm />} />
+          <Route path="/stock" element={<Stock />} />
+          <Route path="/header" element={<Header />} /> 
+          <Route path="/inicio" element={<Inicio/>} /> 
+          <Route path="/contactos" element={<Contactos />} /> 
+          <Route path="/preguntas-frecuentes" element={<Preguntas />} />
+        </Routes>
+      </main>
+      
+    </div>
   )
 }
 
-export default App
+const MainApp = () => (
+  <Router>
+    <App />
+  </Router>
+);
+
+export default MainApp;
