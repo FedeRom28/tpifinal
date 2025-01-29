@@ -1,127 +1,187 @@
 // Stock.jsx
 
 import React, { Component } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import ProductTable from "./ProductTable";
 import Modal from "./Modal";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./Stock.css";
 
 class ComponenteStock extends Component {
-  constructor(props) {
+  constructor(props){
     super(props);
-
     this.state = {
-      productos: [],
-      categorias: [],
+      products: [],
+      categories: [],
       isModalOpen: false,
       isEditMode: false,
-      nuevoProducto: {
+      newProduct: {
         nom_producto: "",
-        descripcion: "",
+        id_categorias: 0 || "",
         precio: "",
-        id_categorias: "",
+        descripcion: "",
       },
-    };
-
-    this.navigate = this.props.navigate;
+    }
   }
 
   componentDidMount() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      this.navigate("/Stock");
-      return;
+    
+    if (sessionStorage.getItem("token")) {
+      this.fetchProducts();
+      this.fetchCategories();
     }
-    this.obtenerProductos();
-    this.obtenerCategorias();
   }
 
-  obtenerProductos() {
-    axios.get("http://localhost:3000/api/productos")
-      .then((response) => this.setState({ productos: response.data }))
-      .catch((error) => console.error("Error obteniendo productos:", error));
+  fetchProducts = () => {
+    console.log("Fetching products...");
+    
+    axios
+      .get("http://localhost:3000/api/productos")
+      .then((response) => this.setState({ products: response.data.productos }))
+      .catch((error) => console.error("Error fetching products:", error));
+  };
+
+  fetchCategories = () => {
+    console.log("Fetching categories...");
+    
+    axios
+      .get("http://localhost:3000/api/categorias")
+      .then((response) => {
+        console.log(response.data);
+        this.setState({ categories: response.data.categorias })
+      })
+      .catch((error) => console.error("Error fetching categories:", error));
+  };
+
+  abrirModal=()=>{
+    this.setState({ isModalOpen: true });
   }
 
-  obtenerCategorias() {
-    axios.get("http://localhost:3000/api/categorias")
-      .then((response) => this.setState({ categorias: response.data }))
-      .catch((error) => console.error("Error obteniendo categorías:", error));
+  cerrarModal=()=>{
+    this.setState({ isModalOpen: false, isEditMode: false });
   }
 
-  abrirModal = () => this.setState({ isModalOpen: true });
-
-  cerrarModal = () => this.setState({ isModalOpen: false, isEditMode: false });
-
-  manejarCambioEntrada = (e) => {
+  handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
+    
     this.setState((prevState) => ({
-      nuevoProducto: { ...prevState.nuevoProducto, [name]: value },
+      newProduct: { ...prevState.newProduct, [name]: value },
     }));
   };
 
-  agregarProductoAlStock = () => {
-    axios.post("http://localhost:3000/api/productos", this.state.nuevoProducto)
-      .then((response) => {
-        this.setState((prevState) => ({
-          productos: [...prevState.productos, response.data],
-          isModalOpen: false,
-        }));
-      })
-      .catch((error) => console.error("Error agregando producto:", error));
-  }
 
-  actualizarProducto = (id) => {
-    axios.put(`http://localhost:3000/api/productos/${id}`, this.state.nuevoProducto)
+  addProductToStock = () => {
+    const product = this.state.newProduct;
+    console.log(product);
+    if(product.id_categorias=="" || product.nom_producto=="" || product.precio=="" || product.descripcion==""){
+      return alert("Por favor complete todos los campos.");
+    }
+    else{
+      const data={
+        nom_producto: product.nom_producto,
+        id_categorias: parseInt(product.id_categorias),
+        precio: product.precio,
+        descripcion: product.descripcion,
+      }
+      const config = {
+        headers: {
+          Authorization: sessionStorage.getItem("token"),
+        },
+      }
+      axios
+      .post("http://localhost:3000/api/productos", data, config)
       .then((response) => {
-        this.setState((prevState) => ({
-          productos: prevState.productos.map((producto) =>
-            producto.id_producto === id ? response.data : producto
-          ),
+        this.setState({
           isModalOpen: false,
-        }));
+        })
+        this.fetchProducts()
       })
-      .catch((error) => console.error("Error actualizando producto:", error));
+      .catch((error) => console.error("Error adding product:", error));
+    };
   }
+    
 
-  eliminarProducto = (id) => {
-    axios.delete(`http://localhost:3000/api/productos/${id}`)
+  updateProduct = (id) => {
+    const product = this.state.newProduct;
+    console.log(product);
+    if(product.id_categorias=="" || product.nom_producto=="" || product.precio=="" || product.descripcion==""){
+      return alert("Por favor complete todos los campos.");
+    }
+    else{
+      const config = {
+        headers: {
+          Authorization: sessionStorage.getItem("token"),
+        },
+      }
+      const data={
+        nom_producto: product.nom_producto,
+        id_categorias: parseInt(product.id_categorias),
+        precio: product.precio,
+        descripcion: product.descripcion,
+      }
+      axios
+      .put(`http://localhost:3000/api/productos/${id}`, data, config)
+      .then((response) => {
+        this.setState({
+          isModalOpen: false,
+        })
+        this.fetchProducts()
+      })
+      .catch((error) => console.error("Error updating product:", error));
+    }
+  };
+
+  deleteProduct = (id) => {
+    const config = {
+      headers: {
+        Authorization: sessionStorage.getItem("token"),
+      },
+    }
+    console.log(id);
+    
+   axios
+      .delete(`http://localhost:3000/api/productos/${id}`, config)
       .then(() => {
-        this.setState((prevState) => ({
-          productos: prevState.productos.filter(
-            (producto) => producto.id_producto !== id
-          ),
-        }));
+        this.fetchProducts()
       })
       .catch((error) => console.error("Error eliminando producto:", error));
   }
 
+  modalEdit = (product) => {
+    this.setState({ isModalOpen:true , isEditMode: true, newProduct: product }); 
+  }
+
   render() {
-    const { productos, categorias, isModalOpen, isEditMode, nuevoProducto } = this.state;
+    const { products, categories, isModalOpen, isEditMode, newProduct } = this.state;
     return (
       <div className="stock-container">
         <main className="main-content">
+
           <button className="add-stock-button" onClick={this.abrirModal}>
-            Agregar stock
+            Agregar Producto
           </button>
           <ProductTable
-            products={productos}
-            onEdit={(producto) => {
-              this.setState({ isEditMode: true, nuevoProducto: producto });
-              this.abrirModal();
-            }}
-            onDelete={(id) => this.eliminarProducto(id)}
+            products={products}
+            categorias={categories}
+            onEdit={(product) =>this.modalEdit(product)}
+            onDelete={(id)=>this.deleteProduct(id)}
           />
         </main>
-        {isModalOpen && (
+        {isModalOpen==true && 
           <Modal
-            product={nuevoProducto}
-            categories={categorias}
-            onChange={this.manejarCambioEntrada}
-            onSubmit={isEditMode ? () => this.actualizarProducto(nuevoProducto.id_producto) : this.agregarProductoAlStock}
+            product={newProduct}
+            categories={categories}
+            handleChange={(e)=>this.handleInputChange(e)}
+            onSubmit={
+              isEditMode
+                ? (id) => this.updateProduct(id)
+                : this.addProductToStock
+            }
             onClose={this.cerrarModal}
           />
-        )}
+        }
       </div>
     );
   }

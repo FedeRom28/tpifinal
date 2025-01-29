@@ -14,9 +14,6 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <Link to="/">INICIO</Link>
-      <Link to="/productos">PRODUCTOS</Link>
-      <Link to="/contactos">CONTACTOS</Link>
-      <Link to="/preguntas-frecuentes">PREGUNTAS FRECUENTES</Link>
       <Link to="/stock">STOCK</Link>
       <button onClick={handleLogout} className="logout-button">Cerrar Sesión</button>
     </nav>

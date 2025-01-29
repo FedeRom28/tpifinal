@@ -8,7 +8,7 @@ class LoginForm extends Component {
     super(props);
     this.state = {
       nom_admin: '',
-      contraseña: '',
+      contrasena: '',
       error: '',
       isLoggedIn: false,
     };
@@ -28,8 +28,8 @@ class LoginForm extends Component {
 
   iniciarSesion = (event) => {
     event.preventDefault();
-    const { nom_admin, contraseña } = this.state;
-    const datos = { nom_admin, contraseña };
+    const { nom_admin, contrasena } = this.state;
+    const datos = { nom_admin, contrasena };
     const url = "http://localhost:3000/api/admin/login";
 
     axios.post(url, datos)
@@ -47,7 +47,7 @@ class LoginForm extends Component {
   };
 
   render() {
-    const { nom_admin, contraseña, error, isLoggedIn } = this.state;
+    const { nom_admin, contrasena, error, isLoggedIn } = this.state;
 
     if (isLoggedIn) {
       return <Navigate to="/inicio" />; // Redirige a la página de inicio
@@ -70,12 +70,12 @@ class LoginForm extends Component {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="contraseña">Contraseña</label>
+            <label htmlFor="contrasena">Contraseña</label>
             <input
               type="password"
-              id="contraseña"
-              name="contraseña"
-              value={contraseña}
+              id="contrasena"
+              name="contrasena"
+              value={contrasena}
               onChange={this.handleChange}
               required
             />
