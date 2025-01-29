@@ -133,16 +133,8 @@ class ComponenteStock extends Component {
     }
   };
 
-  deleteProduct = (id) => {
-    const config = {
-      headers: {
-        Authorization: sessionStorage.getItem("token"),
-      },
-    }
-    console.log(id);
-    
-   axios
-      .delete(`http://localhost:3000/api/productos/${id}`, config)
+  eliminarProducto = (id) => {
+    axios.delete(`http://localhost:3000/api/productos/${id}`)
       .then(() => {
         this.fetchProducts()
       })
