@@ -1,7 +1,4 @@
-// Stock.jsx
-
 import React, { Component } from "react";
-
 import ProductTable from "./ProductTable";
 import Modal from "./Modal";
 import { useNavigate } from "react-router-dom";
@@ -21,12 +18,12 @@ class ComponenteStock extends Component {
         id_categorias: 0 || "",
         precio: "",
         descripcion: "",
+        imagen: null,
       },
     }
   }
 
   componentDidMount() {
-    
     if (sessionStorage.getItem("token")) {
       this.fetchProducts();
       this.fetchCategories();
@@ -34,8 +31,6 @@ class ComponenteStock extends Component {
   }
 
   fetchProducts = () => {
-    console.log("Fetching products...");
-    
     axios
       .get("http://localhost:3000/api/productos")
       .then((response) => this.setState({ products: response.data.productos }))
@@ -43,106 +38,104 @@ class ComponenteStock extends Component {
   };
 
   fetchCategories = () => {
-    console.log("Fetching categories...");
-    
     axios
       .get("http://localhost:3000/api/categorias")
-      .then((response) => {
-        console.log(response.data);
-        this.setState({ categories: response.data.categorias })
-      })
+      .then((response) => this.setState({ categories: response.data.categorias }))
       .catch((error) => console.error("Error fetching categories:", error));
   };
 
-  abrirModal=()=>{
+  abrirModal = () => {
     this.setState({ isModalOpen: true });
   }
 
-  cerrarModal=()=>{
+  cerrarModal = () => {
     this.setState({ isModalOpen: false, isEditMode: false });
   }
 
   handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
-    
     this.setState((prevState) => ({
       newProduct: { ...prevState.newProduct, [name]: value },
     }));
   };
 
+  handleFileChange = (e) => {
+    const { name, files } = e.target;
+    this.setState((prevState) => ({
+      newProduct: { ...prevState.newProduct, [name]: files[0] },
+    }));
+  };
 
   addProductToStock = () => {
     const product = this.state.newProduct;
-    console.log(product);
-    if(product.id_categorias=="" || product.nom_producto=="" || product.precio=="" || product.descripcion==""){
+    if (product.id_categorias === "" || product.nom_producto === "" || product.precio === "" || product.descripcion === "") {
       return alert("Por favor complete todos los campos.");
-    }
-    else{
-      const data={
-        nom_producto: product.nom_producto,
-        id_categorias: parseInt(product.id_categorias),
-        precio: product.precio,
-        descripcion: product.descripcion,
+    } else {
+      const formData = new FormData();
+      formData.append("nom_producto", product.nom_producto);
+      formData.append("id_categorias", parseInt(product.id_categorias));
+      formData.append("precio", product.precio);
+      formData.append("descripcion", product.descripcion);
+      if (product.imagen) {
+        formData.append("imagen", product.imagen);
       }
-      const config = {
-        headers: {
-          Authorization: sessionStorage.getItem("token"),
-        },
-      }
-      axios
-      .post("http://localhost:3000/api/productos", data, config)
-      .then((response) => {
-        this.setState({
-          isModalOpen: false,
-        })
-        this.fetchProducts()
-      })
-      .catch((error) => console.error("Error adding product:", error));
-    };
-  }
-    
 
-  updateProduct = (id) => {
-    const product = this.state.newProduct;
-    console.log(product);
-    if(product.id_categorias=="" || product.nom_producto=="" || product.precio=="" || product.descripcion==""){
-      return alert("Por favor complete todos los campos.");
-    }
-    else{
       const config = {
         headers: {
           Authorization: sessionStorage.getItem("token"),
+          'Content-Type': 'multipart/form-data',
         },
-      }
-      const data={
-        nom_producto: product.nom_producto,
-        id_categorias: parseInt(product.id_categorias),
-        precio: product.precio,
-        descripcion: product.descripcion,
-      }
-      axios
-      .put(`http://localhost:3000/api/productos/${id}`, data, config)
-      .then((response) => {
-        this.setState({
-          isModalOpen: false,
+      };
+
+      axios.post("http://localhost:3000/api/productos", formData, config)
+        .then((response) => {
+          this.setState({ isModalOpen: false });
+          this.fetchProducts();
         })
-        this.fetchProducts()
-      })
-      .catch((error) => console.error("Error updating product:", error));
+        .catch((error) => console.error("Error adding product:", error));
     }
   };
 
-  eliminarProducto = (id) => {
+  updateProduct = (id) => {
+    const product = this.state.newProduct;
+    if (product.id_categorias === "" || product.nom_producto === "" || product.precio === "" || product.descripcion === "") {
+      return alert("Por favor complete todos los campos.");
+    } else {
+      const formData = new FormData();
+      formData.append("nom_producto", product.nom_producto);
+      formData.append("id_categorias", parseInt(product.id_categorias));
+      formData.append("precio", product.precio);
+      formData.append("descripcion", product.descripcion);
+      if (product.imagen) {
+        formData.append("imagen", product.imagen);
+      }
+
+      const config = {
+        headers: {
+          Authorization: sessionStorage.getItem("token"),
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+
+      axios.put(`http://localhost:3000/api/productos/${id}`, formData, config)
+        .then((response) => {
+          this.setState({ isModalOpen: false });
+          this.fetchProducts();
+        })
+        .catch((error) => console.error("Error updating product:", error));
+    }
+  };
+
+  deleteProduct = (id) => {
     axios.delete(`http://localhost:3000/api/productos/${id}`)
       .then(() => {
-        this.fetchProducts()
+        this.fetchProducts();
       })
-      .catch((error) => console.error("Error eliminando producto:", error));
+      .catch((error) => console.error("Error deleting product:", error));
   }
 
   modalEdit = (product) => {
-    this.setState({ isModalOpen:true , isEditMode: true, newProduct: product }); 
+    this.setState({ isModalOpen: true, isEditMode: true, newProduct: product });
   }
 
   render() {
@@ -157,20 +150,17 @@ class ComponenteStock extends Component {
           <ProductTable
             products={products}
             categorias={categories}
-            onEdit={(product) =>this.modalEdit(product)}
-            onDelete={(id)=>this.deleteProduct(id)}
+            onEdit={(product) => this.modalEdit(product)}
+            onDelete={(id) => this.deleteProduct(id)}
           />
         </main>
-        {isModalOpen==true && 
+        {isModalOpen && 
           <Modal
             product={newProduct}
             categories={categories}
-            handleChange={(e)=>this.handleInputChange(e)}
-            onSubmit={
-              isEditMode
-                ? (id) => this.updateProduct(id)
-                : this.addProductToStock
-            }
+            handleChange={(e) => this.handleInputChange(e)}
+            handleFileChange={(e) => this.handleFileChange(e)}
+            onSubmit={isEditMode ? (id) => this.updateProduct(id) : this.addProductToStock}
             onClose={this.cerrarModal}
           />
         }

@@ -7,20 +7,23 @@ class Modal extends Component {
   }
 
   render(){
-    const { product, categories, handleChange, onSubmit, onClose } = this.props;
+    const { product, categories, handleChange, handleFileChange, onSubmit, onClose } = this.props;
    
     return(
       <div className="modal">
         <div className="modal-content">
           <h2>{product.id_producto ? "Editar Producto" : "Agregar Producto"}</h2>
-          <form>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            onSubmit(product.id_producto);
+          }}>
             <label>
               Nombre:
               <input
                 type="text"
                 name="nom_producto"
                 value={product.nom_producto}
-                onChange={(e)=>handleChange(e)}
+                onChange={(e) => handleChange(e)}
               />
             </label>
             <label>
@@ -29,7 +32,7 @@ class Modal extends Component {
                 type="text"
                 name="descripcion"
                 value={product.descripcion}
-                onChange={(e)=>handleChange(e)}
+                onChange={(e) => handleChange(e)}
               />
             </label>
             <label>
@@ -38,29 +41,37 @@ class Modal extends Component {
                 type="text"
                 name="precio"
                 value={product.precio}
-                onChange={(e)=>handleChange(e)}
+                onChange={(e) => handleChange(e)}
               />
             </label>
             <label>
               Categoría:
               <select
                 name="id_categorias"
-                // value={product.id_categorias || ""}
-                onChange={(e)=>handleChange(e)}
+                value={product.id_categorias || ""}
+                onChange={(e) => handleChange(e)}
               >
                 <option value="">Seleccione una categoría</option>
                 {categories.map((category) => (
                   <option
-                    key={category.id_categorias} 
+                    key={category.id_categorias}
                     value={category.id_categorias}
-                    defaultValue={product.id_producto? category.id_categorias === product.id_categorias : false}
+                    defaultValue={product.id_producto ? category.id_categorias === product.id_categorias : false}
                   >
                     {category.nom_categoria}
                   </option>
                 ))}
               </select>
             </label>
-            <button type="button" onClick={()=>onSubmit(product.id_productos)}>
+            <label>
+              Imagen:
+              <input
+                type="file"
+                name="imagen"
+                onChange={(e) => handleFileChange(e)}
+              />
+            </label>
+            <button type="submit">
               Guardar
             </button>
             <button type="button" onClick={onClose}>

@@ -5,6 +5,7 @@ import Navbar from "./componentes/Navbar";
 import Stock from './componentes/Stock';
 import Inicio from './componentes/Inicio';
 import LoginForm from './componentes/LoginForm';
+import ProductTable from './componentes/ProductTable';
 
 const App = () => {
   const location = useLocation();
@@ -22,8 +23,6 @@ const App = () => {
           <Route path="/producttable" element={<ProductTable />} />
           <Route path="/header" element={<Header />} />
           <Route path="/inicio" element={<Inicio />} />
-          <Route path="/contactos" element={<Contactos />} /> 
-          <Route path="/preguntas-frecuentes" element={<Preguntas />} />
         </Routes>
       </main>
       
