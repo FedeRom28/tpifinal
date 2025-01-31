@@ -11,6 +11,7 @@ class ComponenteStock extends Component {
     this.state = {
       products: [],
       categories: [],
+      sizes: [], // Para almacenar los talles
       isModalOpen: false,
       isEditMode: false,
       newProduct: {
@@ -19,6 +20,7 @@ class ComponenteStock extends Component {
         precio: "",
         descripcion: "",
         imagen: null,
+        id_talles: 0 || "", // Agregar el campo de id_talles
       },
     }
   }
@@ -27,6 +29,7 @@ class ComponenteStock extends Component {
     if (sessionStorage.getItem("token")) {
       this.fetchProducts();
       this.fetchCategories();
+      this.fetchSizes(); // Llamar a la función para obtener los talles
     }
   }
 
@@ -42,6 +45,13 @@ class ComponenteStock extends Component {
       .get("http://localhost:3000/api/categorias")
       .then((response) => this.setState({ categories: response.data.categorias }))
       .catch((error) => console.error("Error fetching categories:", error));
+  };
+
+  fetchSizes = () => {
+    axios
+      .get("http://localhost:3000/api/talles")
+      .then((response) => this.setState({ sizes: response.data.talles }))
+      .catch((error) => console.error("Error fetching sizes:", error));
   };
 
   abrirModal = () => {
@@ -68,7 +78,7 @@ class ComponenteStock extends Component {
 
   addProductToStock = () => {
     const product = this.state.newProduct;
-    if (product.id_categorias === "" || product.nom_producto === "" || product.precio === "" || product.descripcion === "") {
+    if (product.id_categorias === "" || product.nom_producto === "" || product.precio === "" || product.descripcion === "" || product.id_talles === "") {
       return alert("Por favor complete todos los campos.");
     } else {
       const formData = new FormData();
@@ -76,6 +86,7 @@ class ComponenteStock extends Component {
       formData.append("id_categorias", parseInt(product.id_categorias));
       formData.append("precio", product.precio);
       formData.append("descripcion", product.descripcion);
+      formData.append("id_talles", parseInt(product.id_talles)); // Agregar id_talles
       if (product.imagen) {
         formData.append("imagen", product.imagen);
       }
@@ -98,7 +109,7 @@ class ComponenteStock extends Component {
 
   updateProduct = (id) => {
     const product = this.state.newProduct;
-    if (product.id_categorias === "" || product.nom_producto === "" || product.precio === "" || product.descripcion === "") {
+    if (product.id_categorias === "" || product.nom_producto === "" || product.precio === "" || product.descripcion === "" || product.id_talles === "") {
       return alert("Por favor complete todos los campos.");
     } else {
       const formData = new FormData();
@@ -106,6 +117,7 @@ class ComponenteStock extends Component {
       formData.append("id_categorias", parseInt(product.id_categorias));
       formData.append("precio", product.precio);
       formData.append("descripcion", product.descripcion);
+      formData.append("id_talles", parseInt(product.id_talles)); // Agregar id_talles
       if (product.imagen) {
         formData.append("imagen", product.imagen);
       }
@@ -139,7 +151,7 @@ class ComponenteStock extends Component {
   }
 
   render() {
-    const { products, categories, isModalOpen, isEditMode, newProduct } = this.state;
+    const { products, categories, sizes, isModalOpen, isEditMode, newProduct } = this.state; // Incluir sizes en el estado
     return (
       <div className="stock-container">
         <main className="main-content">
@@ -158,9 +170,10 @@ class ComponenteStock extends Component {
           <Modal
             product={newProduct}
             categories={categories}
+            sizes={sizes} // Pasar sizes al componente Modal
             handleChange={(e) => this.handleInputChange(e)}
             handleFileChange={(e) => this.handleFileChange(e)}
-            onSubmit={isEditMode ? (id) => this.updateProduct(id) : this.addProductToStock}
+            onSubmit={isEditMode ? this.updateProduct : this.addProductToStock} // Pasar directamente la función
             onClose={this.cerrarModal}
           />
         }

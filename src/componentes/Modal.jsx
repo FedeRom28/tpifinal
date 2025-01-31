@@ -7,15 +7,15 @@ class Modal extends Component {
   }
 
   render(){
-    const { product, categories, handleChange, handleFileChange, onSubmit, onClose } = this.props;
-   
+    const { product, categories, sizes, handleChange, handleFileChange, onSubmit, onClose } = this.props;
+
     return(
       <div className="modal">
         <div className="modal-content">
           <h2>{product.id_producto ? "Editar Producto" : "Agregar Producto"}</h2>
           <form onSubmit={(e) => {
             e.preventDefault();
-            onSubmit(product.id_producto);
+            onSubmit(product.id_productos); // Asegurarse de pasar el id_productos al método onSubmit
           }}>
             <label>
               Nombre:
@@ -56,9 +56,28 @@ class Modal extends Component {
                   <option
                     key={category.id_categorias}
                     value={category.id_categorias}
-                    defaultValue={product.id_producto ? category.id_categorias === product.id_categorias : false}
+                    defaultValue={product.id_productos ? category.id_categorias === product.id_categorias : false}
                   >
                     {category.nom_categoria}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Talle:
+              <select
+                name="id_talles"
+                value={product.id_talles || ""}
+                onChange={(e) => handleChange(e)}
+              >
+                <option value="">Seleccione un talle</option>
+                {sizes.map((size) => (
+                  <option
+                    key={size.id_talles}
+                    value={size.id_talles}
+                    defaultValue={product.id_productos ? size.id_talles === product.id_talles : false}
+                  >
+                    {size.nom_talles}
                   </option>
                 ))}
               </select>
