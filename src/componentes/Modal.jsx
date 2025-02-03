@@ -2,17 +2,31 @@ import React, { Component } from "react";
 import "./Modal.css";
 
 class Modal extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
   }
 
-  render(){
+  handleQuantityChange = (e) => {
+    const { name, value } = e.target;
+    const { product, handleChange } = this.props;
+
+    // Lógica para seleccionar automáticamente un talle al ingresar una cantidad
+    if (name === "cantidad" && value > 0 && product.id_talles === "") {
+      // Suponiendo que el primer talle en la lista sea el predeterminado
+      const defaultTalle = this.props.sizes[0]?.id_talles || "";
+      handleChange({ target: { name: "id_talles", value: defaultTalle } });
+    }
+
+    handleChange(e);
+  }
+
+  render() {
     const { product, categories, sizes, handleChange, handleFileChange, onSubmit, onClose } = this.props;
 
-    return(
+    return (
       <div className="modal">
         <div className="modal-content">
-          <h2>{product.id_producto ? "Editar Producto" : "Agregar Producto"}</h2>
+          <h2>{product.id_productos ? "Editar Producto" : "Agregar Producto"}</h2>
           <form onSubmit={(e) => {
             e.preventDefault();
             onSubmit(product.id_productos); // Asegurarse de pasar el id_productos al método onSubmit
@@ -83,6 +97,15 @@ class Modal extends Component {
               </select>
             </label>
             <label>
+              Cantidad:
+              <input
+                type="number"
+                name="cantidad"
+                value={product.cantidad}
+                onChange={(e) => this.handleQuantityChange(e)}
+              />
+            </label>
+            <label>
               Imagen:
               <input
                 type="file"
@@ -99,7 +122,7 @@ class Modal extends Component {
           </form>
         </div>
       </div>
-    )
+    );
   }
 }
 

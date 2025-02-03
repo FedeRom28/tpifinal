@@ -6,23 +6,26 @@ import axios from "axios";
 import "./Stock.css";
 
 class ComponenteStock extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       products: [],
       categories: [],
       sizes: [], // Para almacenar los talles
+      stock: [], // Para almacenar el stock
       isModalOpen: false,
       isEditMode: false,
       newProduct: {
+        id_productos: 0 || "", // Agregar el campo de id_productos
         nom_producto: "",
         id_categorias: 0 || "",
         precio: "",
         descripcion: "",
         imagen: null,
         id_talles: 0 || "", // Agregar el campo de id_talles
+        cantidad: 0 || "", // Agregar el campo de cantidad
       },
-    }
+    };
   }
 
   componentDidMount() {
@@ -30,6 +33,7 @@ class ComponenteStock extends Component {
       this.fetchProducts();
       this.fetchCategories();
       this.fetchSizes(); // Llamar a la función para obtener los talles
+      this.fetchStock(); // Llamar a la función para obtener el stock
     }
   }
 
@@ -54,13 +58,20 @@ class ComponenteStock extends Component {
       .catch((error) => console.error("Error fetching sizes:", error));
   };
 
+  fetchStock = () => {
+    axios
+      .get("http://localhost:3000/api/stock")
+      .then((response) => this.setState({ stock: response.data.stock }))
+      .catch((error) => console.error("Error fetching stock:", error));
+  };
+
   abrirModal = () => {
     this.setState({ isModalOpen: true });
-  }
+  };
 
   cerrarModal = () => {
     this.setState({ isModalOpen: false, isEditMode: false });
-  }
+  };
 
   handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -78,7 +89,14 @@ class ComponenteStock extends Component {
 
   addProductToStock = () => {
     const product = this.state.newProduct;
-    if (product.id_categorias === "" || product.nom_producto === "" || product.precio === "" || product.descripcion === "" || product.id_talles === "") {
+    if (
+      product.id_categorias === "" ||
+      product.nom_producto === "" ||
+      product.precio === "" ||
+      product.descripcion === "" ||
+      product.id_talles === "" ||
+      product.cantidad === ""
+    ) {
       return alert("Por favor complete todos los campos.");
     } else {
       const formData = new FormData();
@@ -87,6 +105,7 @@ class ComponenteStock extends Component {
       formData.append("precio", product.precio);
       formData.append("descripcion", product.descripcion);
       formData.append("id_talles", parseInt(product.id_talles)); // Agregar id_talles
+      formData.append("cantidad", parseInt(product.cantidad)); // Agregar cantidad
       if (product.imagen) {
         formData.append("imagen", product.imagen);
       }
@@ -98,18 +117,41 @@ class ComponenteStock extends Component {
         },
       };
 
-      axios.post("http://localhost:3000/api/productos", formData, config)
+      axios
+        .post("http://localhost:3000/api/productos", formData, config)
         .then((response) => {
-          this.setState({ isModalOpen: false });
-          this.fetchProducts();
+          // Insertar stock después de agregar el producto
+          const id_productos = response.data.id_productos; // Suponiendo que el ID del producto agregado se devuelve en la respuesta
+          const stockData = {
+            id_productos,
+            cantidad: product.cantidad,
+            id_talles: product.id_talles,
+          };
+          axios
+            .post("http://localhost:3000/api/stock", stockData, config)
+            .then(() => {
+              this.setState({ isModalOpen: false });
+              this.fetchProducts();
+              this.fetchStock();
+            })
+            .catch((error) =>
+              console.error("Error adding stock:", error)
+            );
         })
         .catch((error) => console.error("Error adding product:", error));
     }
   };
 
-  updateProduct = (id) => {
+  updateProduct = () => {
     const product = this.state.newProduct;
-    if (product.id_categorias === "" || product.nom_producto === "" || product.precio === "" || product.descripcion === "" || product.id_talles === "") {
+    if (
+      product.id_categorias === "" ||
+      product.nom_producto === "" ||
+      product.precio === "" ||
+      product.descripcion === "" ||
+      product.id_talles === "" ||
+      product.cantidad === ""
+    ) {
       return alert("Por favor complete todos los campos.");
     } else {
       const formData = new FormData();
@@ -118,6 +160,7 @@ class ComponenteStock extends Component {
       formData.append("precio", product.precio);
       formData.append("descripcion", product.descripcion);
       formData.append("id_talles", parseInt(product.id_talles)); // Agregar id_talles
+      formData.append("cantidad", parseInt(product.cantidad)); // Agregar cantidad
       if (product.imagen) {
         formData.append("imagen", product.imagen);
       }
@@ -129,33 +172,69 @@ class ComponenteStock extends Component {
         },
       };
 
-      axios.put(`http://localhost:3000/api/productos/${id}`, formData, config)
+      axios
+        .put(
+          `http://localhost:3000/api/productos/${product.id_productos}`,
+          formData,
+          config
+        )
         .then((response) => {
-          this.setState({ isModalOpen: false });
-          this.fetchProducts();
+          // Actualizar stock después de actualizar el producto
+          const stockData = {
+            id_productos: product.id_productos,
+            cantidad: product.cantidad,
+            id_talles: product.id_talles,
+          };
+          axios
+            .put(`http://localhost:3000/api/stock/${product.id_stock}`, stockData, config)
+            .then(() => {
+              this.setState({ isModalOpen: false });
+              this.fetchProducts();
+              this.fetchStock();
+            })
+            .catch((error) =>
+              console.error("Error updating stock:", error)
+            );
         })
         .catch((error) => console.error("Error updating product:", error));
     }
   };
 
-  deleteProduct = (id) => {
-    axios.delete(`http://localhost:3000/api/productos/${id}`)
+  deleteProduct = (id_productos, id_stock) => {
+    axios
+      .delete(`http://localhost:3000/api/productos/${id_productos}`)
       .then(() => {
-        this.fetchProducts();
+        // Eliminar stock después de eliminar el producto
+        axios
+          .delete(`http://localhost:3000/api/stock/${id_stock}`)
+          .then(() => {
+            this.fetchProducts();
+            this.fetchStock();
+          })
+          .catch((error) =>
+            console.error("Error deleting stock:", error)
+          );
       })
       .catch((error) => console.error("Error deleting product:", error));
-  }
+  };
 
   modalEdit = (product) => {
-    this.setState({ isModalOpen: true, isEditMode: true, newProduct: product });
-  }
+    this.setState({
+      isModalOpen: true,
+      isEditMode: true,
+      newProduct: {
+        ...product,
+        id_stock: product.id_stock || "", // Asegurarse de que `id_stock` esté incluido
+        cantidad: product.cantidad || "", // Asegurarse de que `cantidad` esté incluido
+      },
+    });
+  };
 
   render() {
-    const { products, categories, sizes, isModalOpen, isEditMode, newProduct } = this.state; // Incluir sizes en el estado
+    const { products, categories, sizes, stock, isModalOpen, isEditMode, newProduct } = this.state;
     return (
       <div className="stock-container">
         <main className="main-content">
-
           <button className="add-stock-button" onClick={this.abrirModal}>
             Agregar Producto
           </button>
@@ -163,20 +242,20 @@ class ComponenteStock extends Component {
             products={products}
             categorias={categories}
             onEdit={(product) => this.modalEdit(product)}
-            onDelete={(id) => this.deleteProduct(id)}
+            onDelete={(id_productos, id_stock) => this.deleteProduct(id_productos, id_stock)}
           />
         </main>
-        {isModalOpen && 
+        {isModalOpen && (
           <Modal
             product={newProduct}
             categories={categories}
-            sizes={sizes} // Pasar sizes al componente Modal
+            sizes={sizes}
             handleChange={(e) => this.handleInputChange(e)}
             handleFileChange={(e) => this.handleFileChange(e)}
             onSubmit={isEditMode ? this.updateProduct : this.addProductToStock} // Pasar directamente la función
             onClose={this.cerrarModal}
           />
-        }
+        )}
       </div>
     );
   }
@@ -186,6 +265,6 @@ class ComponenteStock extends Component {
 const Stock = (props) => {
   const navigate = useNavigate();
   return <ComponenteStock {...props} navigate={navigate} />;
-}
+};
 
 export default Stock;
