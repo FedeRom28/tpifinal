@@ -12,6 +12,13 @@ class ProductTable extends Component{
     return categoria ? categoria.nom_categoria : 'Desconocido';
   }
 
+  getTalleNombre = (id) => {
+    const talle = this.props.sizes.find(talle => talle.id_talles === id);
+    console.log(talle);
+    
+    return talle ? talle.nom_talles : 'Desconocido';
+  }
+
   render(){
     return(
       <table className="product-table">
@@ -21,6 +28,8 @@ class ProductTable extends Component{
           <th>Descripción</th>
           <th>Precio</th>
           <th>Categoría</th>
+          <th>Talle</th>
+          <th>Stock</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -31,8 +40,9 @@ class ProductTable extends Component{
             <td>{product.descripcion}</td>
             <td>{product.precio}</td>
             <td>{this.getCategoriaNombre(product.id_categorias)}</td>
+            <td>{this.getTalleNombre(product.id_talles)}</td>
+            <td>{product.cantidad}</td>
             <td>
-              {console.log({product})}
               <button onClick={() => this.props.onEdit(product)}>Editar</button>
               <button onClick={() => this.props.onDelete(product.id_productos)}>Eliminar</button>
             </td>

@@ -12,7 +12,6 @@ class ComponenteStock extends Component {
       products: [],
       categories: [],
       sizes: [], // Para almacenar los talles
-      stock: [], // Para almacenar el stock
       isModalOpen: false,
       isEditMode: false,
       newProduct: {
@@ -33,7 +32,6 @@ class ComponenteStock extends Component {
       this.fetchProducts();
       this.fetchCategories();
       this.fetchSizes(); // Llamar a la función para obtener los talles
-      this.fetchStock(); // Llamar a la función para obtener el stock
     }
   }
 
@@ -56,13 +54,6 @@ class ComponenteStock extends Component {
       .get("http://localhost:3000/api/talles")
       .then((response) => this.setState({ sizes: response.data.talles }))
       .catch((error) => console.error("Error fetching sizes:", error));
-  };
-
-  fetchStock = () => {
-    axios
-      .get("http://localhost:3000/api/stock")
-      .then((response) => this.setState({ stock: response.data.stock }))
-      .catch((error) => console.error("Error fetching stock:", error));
   };
 
   abrirModal = () => {
@@ -120,23 +111,8 @@ class ComponenteStock extends Component {
       axios
         .post("http://localhost:3000/api/productos", formData, config)
         .then((response) => {
-          // Insertar stock después de agregar el producto
-          const id_productos = response.data.id_productos; // Suponiendo que el ID del producto agregado se devuelve en la respuesta
-          const stockData = {
-            id_productos,
-            cantidad: product.cantidad,
-            id_talles: product.id_talles,
-          };
-          axios
-            .post("http://localhost:3000/api/stock", stockData, config)
-            .then(() => {
-              this.setState({ isModalOpen: false });
-              this.fetchProducts();
-              this.fetchStock();
-            })
-            .catch((error) =>
-              console.error("Error adding stock:", error)
-            );
+          this.setState({ isModalOpen: false });
+          this.fetchProducts();
         })
         .catch((error) => console.error("Error adding product:", error));
     }
@@ -179,22 +155,8 @@ class ComponenteStock extends Component {
           config
         )
         .then((response) => {
-          // Actualizar stock después de actualizar el producto
-          const stockData = {
-            id_productos: product.id_productos,
-            cantidad: product.cantidad,
-            id_talles: product.id_talles,
-          };
-          axios
-            .put(`http://localhost:3000/api/stock/${product.id_stock}`, stockData, config)
-            .then(() => {
-              this.setState({ isModalOpen: false });
-              this.fetchProducts();
-              this.fetchStock();
-            })
-            .catch((error) =>
-              console.error("Error updating stock:", error)
-            );
+          this.setState({ isModalOpen: false });
+          this.fetchProducts();
         })
         .catch((error) => console.error("Error updating product:", error));
     }
@@ -204,16 +166,7 @@ class ComponenteStock extends Component {
     axios
       .delete(`http://localhost:3000/api/productos/${id_productos}`)
       .then(() => {
-        // Eliminar stock después de eliminar el producto
-        axios
-          .delete(`http://localhost:3000/api/stock/${id_stock}`)
-          .then(() => {
-            this.fetchProducts();
-            this.fetchStock();
-          })
-          .catch((error) =>
-            console.error("Error deleting stock:", error)
-          );
+        this.fetchProducts();
       })
       .catch((error) => console.error("Error deleting product:", error));
   };
@@ -231,7 +184,7 @@ class ComponenteStock extends Component {
   };
 
   render() {
-    const { products, categories, sizes, stock, isModalOpen, isEditMode, newProduct } = this.state;
+    const { products, categories, sizes, isModalOpen, isEditMode, newProduct } = this.state;
     return (
       <div className="stock-container">
         <main className="main-content">
@@ -241,6 +194,7 @@ class ComponenteStock extends Component {
           <ProductTable
             products={products}
             categorias={categories}
+            sizes={sizes}
             onEdit={(product) => this.modalEdit(product)}
             onDelete={(id_productos, id_stock) => this.deleteProduct(id_productos, id_stock)}
           />
