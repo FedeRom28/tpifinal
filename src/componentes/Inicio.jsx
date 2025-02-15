@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './Inicio.css';
 import axios from 'axios';
+
 class Inicio extends Component {
   constructor(props) {
     super(props);
@@ -12,7 +13,7 @@ class Inicio extends Component {
   getProductos(){
     axios.get('http://localhost:3000/api/productos')
     .then(res=>{
-      this.setState({productos: res.data.productos});
+      this.setState({ productos: res.data.productos });
       console.log(res.data.productos);
     })
     .catch(err=>{
@@ -21,7 +22,7 @@ class Inicio extends Component {
   }
 
   componentDidMount() {
-    this.getProductos()
+    this.getProductos();
   }
 
   render() {
@@ -44,11 +45,15 @@ class Inicio extends Component {
 
         <main className="productos">
           {productos.map((producto) => (
-            <div key={producto.id} className="producto-card">
-              <img src={producto.imagen} alt={producto.nom_producto} />
+            <div key={producto.id_productos} className="producto-card">
+              {producto.imagen && <img src={`http://localhost:3000/uploads/${producto.imagen}`} alt={producto.nom_producto} />}
               <h4>{producto.nom_producto}</h4>
               <p>$ {producto.precio}</p>
-              {!producto.stock && <span className="sin-stock">SIN STOCK</span>}
+              {producto.cantidad > 0 ? (
+                <span className="disponible">DISPONIBLE</span>
+              ) : (
+                <span className="sin-stock">SIN STOCK</span>
+              )}
             </div>
           ))}
         </main>
