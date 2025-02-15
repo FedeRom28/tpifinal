@@ -49,7 +49,11 @@ class Inicio extends Component {
               {producto.imagen && <img src={`http://localhost:3000/uploads/${producto.imagen}`} alt={producto.nom_producto} />}
               <h4>{producto.nom_producto}</h4>
               <p>$ {producto.precio}</p>
-              {!producto.stock && <span className="sin-stock">SIN STOCK</span>}
+              {producto.cantidad > 0 ? (
+                <span className="disponible">DISPONIBLE</span>
+              ) : (
+                <span className="sin-stock">SIN STOCK</span>
+              )}
             </div>
           ))}
         </main>
