@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Header from "./componentes/Header";
@@ -38,9 +36,6 @@ const MainApp = () => (
   </Router>
 );
 
-<<<<<<< HEAD
+
 export default MainApp;
->>>>>>> 99fd0a15a98e17c41e9583bb11abb93536752ebf
-=======
-export default MainApp;
->>>>>>> develop_rodriguez
+
