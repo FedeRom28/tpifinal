@@ -28,6 +28,25 @@
   font-size: 1.2rem;
 }
 
+/* Estilos para los botones de categoría */
+.categorias ul li button {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 5px 0;
+  transition: color 0.3s, font-weight 0.3s;
+}
+
+.categorias ul li button:hover, 
+.categorias ul li button:focus, 
+.categorias ul li button.active {
+  color: #007bff;
+  font-weight: bold;
+}
+
 .categorias .contacto {
   margin-top: 20px;
   font-size: 1.5rem;
@@ -45,12 +64,12 @@
 
 /* Estilos para cada tarjeta de producto */
 .producto-card {
-  width: 30%;
+  width: 23%;
   background-color: white;
   border: 1px solid #e0e0e0;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  padding: 15px;
+  padding: 10px;
   text-align: center;
 }
 
@@ -58,17 +77,17 @@
   width: 100%;
   height: auto;
   border-bottom: 1px solid #e0e0e0;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .producto-card h4 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
 }
 
 .producto-card p {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
+  font-size: 1rem;
+  margin-bottom: 8px;
 }
 
 .producto-card .disponible {

@@ -7,36 +7,65 @@ class Inicio extends Component {
     super(props);
     this.state = {
       productos: [],
+      categorias: [],
+      categoriaSeleccionada: 'all',
     };
-  }
-
-  getProductos(){
-    axios.get('http://localhost:3000/api/productos')
-    .then(res=>{
-      this.setState({ productos: res.data.productos });
-      console.log(res.data.productos);
-    })
-    .catch(err=>{
-      console.log(err);
-    })
   }
 
   componentDidMount() {
     this.getProductos();
+    this.getCategorias();
+  }
+
+  getProductos() {
+    axios.get('http://localhost:3000/api/productos')
+      .then(res => {
+        this.setState({ productos: res.data.productos });
+        console.log(res.data.productos);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  getCategorias() {
+    axios.get('http://localhost:3000/api/categorias')
+      .then(res => {
+        this.setState({ categorias: res.data.categorias });
+        console.log(res.data.categorias);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  setCategoriaSeleccionada = (categoria) => {
+    this.setState({ categoriaSeleccionada: categoria });
   }
 
   render() {
-    const { productos } = this.state;
+    const { productos, categorias, categoriaSeleccionada } = this.state;
+
+    // Filtrar los productos según la categoría seleccionada
+    const productosFiltrados = categoriaSeleccionada === 'all'
+      ? productos
+      : productos.filter(producto => producto.id_categorias === categoriaSeleccionada);
 
     return (
       <div className="inicio-container">
         <aside className="categorias">
           <h3>Categorías principales</h3>
           <ul>
-            <li>buzos</li>
-            <li>remeras</li>
-            <li>pantalones</li>
-            <li>zapatillas</li>
+            <li>
+              <button onClick={() => this.setCategoriaSeleccionada('all')}>Todos</button>
+            </li>
+            {categorias.map((categoria) => (
+              <li key={categoria.id_categorias}>
+                <button onClick={() => this.setCategoriaSeleccionada(categoria.id_categorias)}>
+                  {categoria.nom_categoria}
+                </button>
+              </li>
+            ))}
           </ul>
           <div className="contacto">
             <i className="fas fa-phone-alt"></i>
@@ -44,7 +73,7 @@ class Inicio extends Component {
         </aside>
 
         <main className="productos">
-          {productos.map((producto) => (
+          {productosFiltrados.map((producto) => (
             <div key={producto.id_productos} className="producto-card">
               {producto.imagen && <img src={`http://localhost:3000/uploads/${producto.imagen}`} alt={producto.nom_producto} />}
               <h4>{producto.nom_producto}</h4>

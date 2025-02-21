@@ -52,7 +52,7 @@ class Modal extends Component {
             <label>
               Precio:
               <input
-                type="text"
+                type="number"
                 name="precio"
                 value={product.precio}
                 onChange={(e) => handleChange(e)}
